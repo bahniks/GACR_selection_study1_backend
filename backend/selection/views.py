@@ -84,9 +84,13 @@ def manager(request):
             participant = Participant.objects.get(participant_id = participant_id)            
             group = Group.objects.get(group_number = participant.group_number)
             if offer == "outcome":
-                # downloading the outcome
-                winner = Winner.objects.get(group_number = group.group_number, block = int(block) - 1)
-                all_completed = winner.completed == group.participants
+                # downloading the outcome                
+                if participant.block != int(block):
+                    participant.block = block
+                    participant.save()
+                winner = Winner.objects.get(group_number = group.group_number, block = int(block) - 1)                
+                finishedParticipants = Participant.objects.filter(group_number = group.group_number, block = int(block))
+                all_completed = winner.completed == group.participants or len(finishedParticipants) == group.participants
                 response = "_".join(["outcome", str(winner.wins), str(winner.reward), str(winner.charity), str(all_completed)])
                 return HttpResponse(response)
             else:
