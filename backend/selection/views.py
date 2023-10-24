@@ -50,7 +50,7 @@ def manager(request):
                     Participant.objects.get(participant_id = participant_id)
                     return HttpResponse("already_logged")
                 except ObjectDoesNotExist:                    
-                    currentSession.participants += 1 # does not work for some reason - a workaround is through filtering participants within the session and getting the length
+                    currentSession.participants += 1
                     currentSession.save()
                     participant = Participant(participant_id = participant_id, group_number = -99, session = currentSession.session_number)
                     participant.save()         
